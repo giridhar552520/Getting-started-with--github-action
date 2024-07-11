@@ -43,4 +43,4 @@ jobs:
           echo tools?
           mvn --version
           gradle --version
-          ant --version
+          ant -version
