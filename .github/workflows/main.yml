@@ -39,7 +39,7 @@ jobs:
       - name: step 5 - Build windows execution policy
         run: |
             echo Here is the windows execution policy:
-            Git-ExecutionPolicy
+            Get-ExecutionPolicy
 
       - name: step 6 - List windows Environment Variables
         run: env
