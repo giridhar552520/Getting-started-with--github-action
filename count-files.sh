@@ -21,5 +21,5 @@ FILE_COUNT=$(find "$DIRECTORY" -maxdepth 1 -type f | wc -l)
 echo "The number of files in '$DIRECTORY' is: $FILE_COUNT"
 
 # Create a result file for GitHub Actions to use
-echo "The number of files in '$DIRECTORY' is: $FILE_COUNT" > .github/sworkflows/count-files-result.txt
+echo "The number of files in '$DIRECTORY' is: $FILE_COUNT" > .github/workflows/count-files-result.txt
 
