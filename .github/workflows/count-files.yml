@@ -17,7 +17,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Run count-files script
-        run: ./.github/workflows/count-files.sh .
+        run: ./.github/workflows/count-files.sh 
 
       - name: Upload count result
         uses: actions/upload-artifact@v3
