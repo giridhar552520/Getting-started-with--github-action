@@ -1,4 +1,4 @@
-name: Count Files in Directory field
+name: Count Files in Directory 
 
 on:
   pull_request:
