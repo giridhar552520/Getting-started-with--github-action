@@ -17,13 +17,13 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Run count-files script
-        run: ./.github/workflows/count-files.sh 
+        run: bash ./count-files.sh 
 
       - name: Upload count result
         uses: actions/upload-artifact@v3
         with:
           name: count-files-result
-          path: .github/workflows/count-files-result.txt
+          path: bash ./count-files-result.txt
 
       - name: Comment on pull request
         id: comment
@@ -31,7 +31,7 @@ jobs:
         with:
           script: |
             const fs = require('fs');
-            const filePath = '.github/workflows/count-files-result.txt';
+            const filePath = '/count-files-result.txt';
             const result = fs.readFileSync(filePath, 'utf8');
             const comment = `**File Count Result:**\n\n${result}`;
             await github.rest.issues.createComment({
