@@ -10,6 +10,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Set execute permissions for the check script
+        run: chmod +x .github/workflows/check-required-files.sh
+
       - name: Run file check script
-        run: sh ./check-required-files.sh
+        run: bash ./check-required-files.sh
       
