@@ -58,7 +58,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: step 2.1 - Check file check script
-        run: sh ./script1.sh
+        run: ./script1.sh
         
       - name: step 3 - Set up JDK 1.8
         uses: actions/setup-java@v1
