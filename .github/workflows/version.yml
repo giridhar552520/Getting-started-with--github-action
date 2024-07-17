@@ -1,35 +1,36 @@
-name: Update Version
+name: Increment Version
 
 on:
-  pull_request:
-    types: [closed]  # Trigger this workflow on pull request closure
+  push:
+    branches:
+      - main
+    # Only trigger the workflow on push events that are merges (i.e., not direct pushes or merges from other branches)
+    types:
+      - merged
 
 jobs:
-  bump-version:
-    if: github.event.pull_request.merged == true  # Only run if the pull request is merged
+  increment_version:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout the repository
+      - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up Python (for version bumping)
-        uses: actions/setup-python@v4
+      - name: Set up Node.js (Optional)
+        uses: actions/setup-node@v3
         with:
-          python-version: '3.x'  # Required for version bumping; adjust as needed
+          node-version: '14'  # Specify your Node.js version here if needed
 
-      - name: Set up Git
+      - name: Increment Version
         run: |
-          git config user.name "github-actions"
-          git config user.email "actions@github.com"
+          chmod +x ./increment-version.sh
+          ./increment-version.sh
 
-      - name: Run version bump script
+      - name: Commit and Push Version Changes
         run: |
-          chmod +x bump-version.sh
-          ./bump-version.sh
-
-      - name: Commit and push changes
-        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
           git add version.txt
-          git commit -m "Automated version bump"
+          git commit -m "Increment version number"
           git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
