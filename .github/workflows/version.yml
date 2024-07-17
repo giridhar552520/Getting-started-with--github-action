@@ -1,0 +1,35 @@
+name: Bump Version
+
+on:
+  pull_request:
+    types: [closed]  # Trigger this workflow on pull request closure
+
+jobs:
+  bump-version:
+    if: github.event.pull_request.merged == true  # Only run if the pull request is merged
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python (for version bumping)
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'  # Required for version bumping; adjust as needed
+
+      - name: Set up Git
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+
+      - name: Run version bump script
+        run: |
+          chmod +x bump-version.sh
+          ./bump-version.sh
+
+      - name: Commit and push changes
+        run: |
+          git add version.txt
+          git commit -m "Automated version bump"
+          git push
