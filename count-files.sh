@@ -2,7 +2,7 @@
 
 # Check if a directory path is provided as an argument
 if [ "$#" -ne 1 ]; then
-  echo "Usage: $0 <C:\Users\GiridharRathod\Learn-Shell>"
+  echo "Usage: $0 <C:/Users/GiridharRathod/Learn-Shell>"
   exit 1
 fi
 
