@@ -6,6 +6,9 @@ on:
       - main
   workflow_dispatch:
 
+permissions:
+  contents: write  # Required to push changes to the repository
+
 jobs:
   changelog:
     runs-on: ubuntu-latest
@@ -24,7 +27,7 @@ jobs:
 
       - name: Run changelog generation script
         run: |
-          bash ./generate-changelog.sh
+          ./generate-changelog.sh
 
       - name: Commit and push changelog
         run: |
@@ -34,5 +37,4 @@ jobs:
           git commit -m "Update changelog"
           git push origin main
         env:
-          GITHUB_TOKEN: ${{ secrets.PAT }}
-
+          GITHUB_TOKEN: ${{ secrets.PAT }}  # Ensure PAT is configured correctly
