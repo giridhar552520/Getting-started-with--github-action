@@ -1,43 +1,36 @@
-name: Count Files in Directory fields
+name: Count Files in Directory
 
 on:
-  push:
-    branches: [ "main" ]
   pull_request:
-    types: [ "main" ]
-    branches:
-      - main
+    types: [opened, synchronize]  # Run on new pull requests and updates to existing pull requests
 
 jobs:
-  count-files:
+  count_files:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Run count-files script
-        run: sh ./count-files.sh
+      - name: Run count-files.sh
+        id: count_files
+        run: |
+          ./count-files.sh .  # Pass the root directory as the argument to count files
+        # Save the result to a variable
+        id: result
+        run: |
+          FILE_COUNT=$(./count-files.sh .)
+          echo "FILE_COUNT=$FILE_COUNT" >> $GITHUB_ENV
 
-      - name: Upload count result
-        uses: actions/upload-artifact@v3
-        with:
-          name: count-files-result
-          path: .github/workflows/count-files-result.txt
-
-      - name: Comment on pull request
-        id: comment
+      - name: Comment on PR with the file count
         uses: actions/github-script@v6
         with:
           script: |
-            const fs = require('fs');
-            const filePath = '.github/workflows/count-files-result.txt';
-            const result = fs.readFileSync(filePath, 'utf8');
-            const comment = `**File Count Result:**\n\n${result}`;
+            const fileCount = process.env.FILE_COUNT;
+            const issueComment = `Number of files in the repository root directory: ${fileCount}`;
             await github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: comment,
+              body: issueComment
             });
-
