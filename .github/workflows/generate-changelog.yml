@@ -18,10 +18,13 @@ jobs:
         run: |
           git fetch --tags
 
-      - name: Run changelog generation script
+      - name: Ensure script is executable
         run: |
           chmod +x ./generate-changelog.sh
-          ./generate-changelog.sh
+
+      - name: Run changelog generation script
+        run: |
+           ./generate-changelog.sh
 
       - name: Commit and push changelog
         run: |
