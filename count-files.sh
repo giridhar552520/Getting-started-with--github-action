@@ -6,7 +6,7 @@ if [ "$#" -ne 1 ]; then
   exit 1
 fi
 
-DIRECTORY_PATH="$1"
+DIRECTORY_PATH="C:/Users/GiridharRathod/Learn-Shell"
 
 # Check if the given path is a directory
 if [ ! -d "$DIRECTORY_PATH" ]; then
