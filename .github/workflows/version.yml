@@ -1,4 +1,4 @@
-name: Bump Version
+name: Update Version
 
 on:
   pull_request:
