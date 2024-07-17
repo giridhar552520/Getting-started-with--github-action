@@ -8,22 +8,6 @@ if [ ! -d ".git" ]; then
   exit 1
 fi
 
-# Get the latest tag, if it exists
-LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
-
-if [ -z "$LATEST_TAG" ]; then
-  # If no tags are found, set the range from the beginning of the repository
-  COMMIT_RANGE="--since=0"
-  echo "No tags found. Generating changelog from the beginning of the repository."
-else
-  # If tags are found, use the latest tag
-  COMMIT_RANGE="$LATEST_TAG..HEAD"
-  echo "Latest tag: $LATEST_TAG"
-fi
-
-# Get the commits since the last tag or from the beginning of the repository
-COMMITS=$(git log $COMMIT_RANGE --pretty=format:"%s" --no-merges)
-
 # Initialize changelog
 CHANGELOG_FILE="CHANGELOG.md"
 
