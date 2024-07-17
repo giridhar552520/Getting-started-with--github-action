@@ -9,7 +9,13 @@ if [ ! -d ".git" ]; then
 fi
 
 # Get the latest tag
-LATEST_TAG=$(git describe --tags --abbrev=0)
+LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+
+if [ -z "$LATEST_TAG" ]; then
+  echo "No tags found. Exiting."
+  exit 1
+fi
+
 echo "Latest tag: $LATEST_TAG"
 
 # Get the commits since the last tag
