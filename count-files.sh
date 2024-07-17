@@ -1,25 +1,21 @@
 #!/bin/bash
 
-# Check if a directory path is provided as an argument
+# Check if the directory path argument is provided
 if [ "$#" -ne 1 ]; then
-  echo "Usage: $0 <C:/Users/GiridharRathod/Learn-Shell>"
+  echo "Usage: $0 <directory-path>"
   exit 1
 fi
 
-DIRECTORY=$1
+DIRECTORY_PATH="$1"
 
-# Check if the directory exists
-if [ ! -d "$DIRECTORY" ]; then
-  echo "Directory $DIRECTORY does not exist."
+# Check if the given path is a directory
+if [ ! -d "$DIRECTORY_PATH" ]; then
+  echo "Error: '$DIRECTORY_PATH' is not a directory."
   exit 1
 fi
 
-# Count the number of files in the directory (excluding subdirectories)
-FILE_COUNT=$(find "$DIRECTORY" -maxdepth 1 -type f | wc -l)
+# Count the number of files (excluding subdirectories) in the specified directory
+FILE_COUNT=$(find "$DIRECTORY_PATH" -maxdepth 1 -type f | wc -l)
 
 # Output the result
-echo "The number of files in '$DIRECTORY' is: $FILE_COUNT"
-
-# Create a result file for GitHub Actions to use
-echo "The number of files in '$DIRECTORY' is: $FILE_COUNT" > .github/workflows/count-files-result.txt
-
+echo "Number of files in '$DIRECTORY_PATH': $FILE_COUNT"
