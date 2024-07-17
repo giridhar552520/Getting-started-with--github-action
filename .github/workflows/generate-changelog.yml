@@ -24,7 +24,7 @@ jobs:
 
       - name: Run changelog generation script
         run: |
-           ./generate-changelog.sh
+          sh ./generate-changelog.sh
 
       - name: Commit and push changelog
         run: |
