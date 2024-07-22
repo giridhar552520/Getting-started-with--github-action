@@ -22,8 +22,8 @@ jobs:
 
       - name: Increment Version
         run: |
-          chmod +x ./increment-version.sh
-          ./increment-version.sh
+          chmod +x ./version.sh
+          ./version.sh
 
       - name: Commit and Push Version Changes
         run: |
