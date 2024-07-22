@@ -27,8 +27,8 @@ jobs:
 
       - name: Commit and Push Version Changes
         run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "github-actions@github.com"
+          git config --global user.name "giridhar552520"
+          git config --global user.email "giridharprasad926@gmail.com"
           git add version.txt
           git commit -m "Increment version number"
           git push
