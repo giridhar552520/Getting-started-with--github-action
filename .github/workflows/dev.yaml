@@ -1,0 +1,69 @@
+name: CI/CD Workflow for Dev
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2 
+
+    - name: Update Docker Compose Image Tag
+      run: |
+        export APP_TAG=altiushub:${{ github.ref_name }}-${{ github.run_number }}
+        sed -i "s|image: altiushubapp.azurecr.io/altiushub:latest|image: $APP_TAG|g" docker-compose.yaml
+
+    - name: Build and Push Docker Image
+      run: |
+        docker-compose -f docker-compose.yaml build --no-cache
+        docker-compose -f docker-compose.yaml push
+
+    - name: Login to Azure Container Registry
+      uses: azure/docker-login@v1
+      with:
+        login-server: altiushubapp.azurecr.io
+        username: ${{ secrets.AZURE_CONTAINER_REGISTRY_USERNAME }}
+        password: ${{ secrets.AZURE_CONTAINER_REGISTRY_PASSWORD }}
+
+    - name: Build and start Docker containers
+      run: |
+        docker-compose -f docker-compose.yaml up -d
+
+    - name: Wait for services to be ready # Adjust if necessary to ensure services are fully up and running
+      run: |
+        sleep 30
+    
+    - name: Az CLI login
+      uses: azure/login@v2
+      with:
+        client-id: ${{ secrets.AZURE_CLIENT_ID }}
+        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+    - name: Deploy Container App
+      run: |
+        az containerapp up --name ${{ secrets.AZURE_CONTAINER_APP }} \
+          --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
+          --environment Altiushub-App \
+          --location centralindia \
+          --image altiushubapp.azurecr.io/altiushub:${{ github.ref_name }}-${{ github.run_number }} \
+          --registry-server altiushubapp.azurecr.io \
+          --registry-username ${{ secrets.AZURE_CONTAINER_REGISTRY_USERNAME }} \
+          --registry-password ${{ secrets.AZURE_CONTAINER_REGISTRY_PASSWORD }} \
+          --env-vars 'AZURE_CLIENT_ID=${{ secrets.AZURE_CLIENT_ID }}' 'AZURE_TENANT_ID=${{ secrets.AZURE_TENANT_ID }}' 'AZURE_KEYVAULT_URL=${{ secrets.AZURE_KEYVAULT_URL }}' 'AZURE_SECRET_NAME=${{ secrets.AZURE_SECRET_NAME }}' 'DEFAULT_DATA_FILE=dev.json'
+
+    - name: Tear down containers
+      run: |
+        docker-compose -f docker-compose.yaml down
+
+    - name: Clean up Docker
+      run: |
+        docker system prune -af
