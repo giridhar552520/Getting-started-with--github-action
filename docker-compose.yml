@@ -1,0 +1,47 @@
+version: '3.1'
+
+services:
+  wordpress:
+    #build: .
+    ports:
+      - "4580:80"
+    volumes:    #Maps the local ./src directory to /var/www/html in the container, which is where WordPress files are stored
+      - ./src:/var/www/html
+    environment:
+      WORDPRESS_DB_HOST: ${WORDPRESS_DB_HOST}
+      WORDPRESS_DB_USER: ${WORDPRESS_DB_USER}
+      WORDPRESS_DB_PASSWORD: ${WORDPRESS_DB_PASSWORD}
+      WORDPRESS_DB_NAME: ${WORDPRESS_DB_NAME}
+    env_file:
+      - .env
+    container_name: altishub
+    restart: always
+    image: wordpress:php8.2
+    depends_on:
+      - altiushub_db_host
+
+  altiushub_db_host:
+    image: mariadb:10.6.4-focal
+    #container_name: altiushub_db
+    #image: mysql:8.0.27
+    #platform: linux/x86_64
+    volumes:
+      - ./database/data:/var/lib/mysql
+      - ./database/initdb.d:/docker-entrypoint-initdb.d
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    env_file:
+      - .env
+    command: '--default-authentication-plugin=mysql_native_password'
+
+  phpmyadmin:
+    image: phpmyadmin
+    restart: always
+    ports:
+      - 9230:89
+    environment:
+      - PMA_ARBITRARY=1
