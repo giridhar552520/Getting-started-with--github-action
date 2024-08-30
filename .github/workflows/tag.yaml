@@ -1,0 +1,37 @@
+name: Docker Build and Tag
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0  # Fetch all history for all tags and branches
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install semver
+
+    - name: Build Docker image
+      run: docker build -t myapp:latest .
+
+    - name: Login to Docker Hub
+      uses: docker/login-action@v1
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+    - name: Tag and push Docker image
+      run: python pysemver_docker_tagging.py myusername/myapp patch
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
