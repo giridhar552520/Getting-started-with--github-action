@@ -1,6 +1,6 @@
 # Changelog
 
-## 2024-08-09
+## 2024-08-30
 
 ### Other Changes
 - \n
