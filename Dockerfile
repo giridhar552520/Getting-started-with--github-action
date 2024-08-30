@@ -9,7 +9,7 @@ COPY . /app
 
 # Install any needed packages specified in requirements.txt
 COPY version.txt /app/
-RUN pip install --no-cache-dir -r version.txt
+#RUN pip install --no-cache-dir -r version.txt
 
 # Make port 80 available to the world outside this container
 EXPOSE 80
